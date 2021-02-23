@@ -12,26 +12,28 @@ import {
 import Card from "@material-ui/core/Card";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import { getUsersAction } from "../../actions";
 import { useTypedSelector } from "../../reducers";
 import { UserNav } from "./DashboardStyle";
 
 const Dashboard: React.FC = () => {
   const users = useTypedSelector(({ users }) => users);
+  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUsersAction());
-  }, []);
+  }, [dispatch]);
 
   return (
-    <>
-      <h1>Dashboard</h1>
       <Card>
         <CardContent>
           <UserNav>
             <p>User list</p>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={() => {
+              history.push('/add-user');
+            }}>
               Add new
             </Button>
           </UserNav>
@@ -73,7 +75,6 @@ const Dashboard: React.FC = () => {
           </TableContainer>
         </CardContent>
       </Card>
-    </>
   );
 };
 

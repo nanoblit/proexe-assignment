@@ -3,7 +3,7 @@ import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
-import { addUserAction, editUserAction, getUsersAction } from "../../actions";
+import { editUserAction, getUsersAction } from "../../actions";
 import { useTypedSelector } from "../../reducers";
 import { StyledCardContent, StyledTextField } from "./EditUserStyle";
 

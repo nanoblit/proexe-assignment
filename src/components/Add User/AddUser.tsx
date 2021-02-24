@@ -1,9 +1,9 @@
 import { Button, Card, CardHeader, FormControl } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
-import { addUserAction } from "../../actions";
+import { addUserAction, getUsersAction } from "../../actions";
 import { StyledCardContent, StyledTextField } from "./AddUserStyle";
 
 const AddUser: React.FC = () => {
@@ -23,6 +23,11 @@ const AddUser: React.FC = () => {
       email
     );
   };
+
+  
+  useEffect(() => {
+    dispatch(getUsersAction());
+  }, [dispatch]);
 
   return (
     <Card>

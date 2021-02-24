@@ -12,6 +12,8 @@ import {
   User,
 } from "./types";
 
+let firstGet = true;
+
 export const getUsersAction = (): AppThunk => async (
   dispatch: ThunkDispatch<{}, {}, GetUsersAction>,
   getState
@@ -21,11 +23,12 @@ export const getUsersAction = (): AppThunk => async (
   );
   const users: User[] = await res.json();
 
-  if (getState().users.length === 0) {
+  if (firstGet) {
     dispatch({
       type: GET_USERS,
       payload: users,
     });
+    firstGet = false;
   }
 };
 

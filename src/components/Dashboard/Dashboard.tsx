@@ -11,9 +11,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
 } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { deleteUserAction, getUsersAction } from "../../actions";
@@ -23,9 +24,32 @@ import { DeleteDialogButtons, NoUsersP, UserNav } from "./DashboardStyle";
 const Dashboard: React.FC = () => {
   const [isDeletionDialogOpen, setIsDeletionDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(-1);
+  const [sortingActive, setSortingActive] = useState(false);
+  const [sortingMode, setSortingMode] = useState<"desc" | "asc">("desc");
   const users = useTypedSelector(({ users }) => users);
+  const sortedUsers = useMemo(() => {
+    if (sortingActive) {
+      if (sortingMode === "desc") {
+        return users.sort((a, b) => (a.username < b.username ? -1 : 1));
+      } else {
+        return users.sort((a, b) => (a.username > b.username ? -1 : 1));
+      }
+    }
+    return users.sort((a, b) => (a.id < b.id ? -1 : 1));
+  }, [users, sortingMode, sortingActive]);
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const sort = (doSort: boolean) => {
+    if (doSort) {
+      if (sortingActive) {
+        setSortingMode((prev) => (prev === "asc" ? "desc" : "asc"));
+      }
+      setSortingActive(() => true);
+    } else {
+      setSortingActive(() => false);
+    }
+  };
 
   const askToDeleteUser = (id: number) => {
     setIdToDelete(() => id);
@@ -65,9 +89,25 @@ const Dashboard: React.FC = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="center">Id</TableCell>
+                  <TableCell align="center">
+                    <TableSortLabel
+                      active={!sortingActive}
+                      direction={"desc"}
+                      onClick={() => sort(false)}
+                    >
+                      Id
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell align="center">Name</TableCell>
-                  <TableCell align="center">Username</TableCell>
+                  <TableCell align="center">
+                    <TableSortLabel
+                      active={sortingActive}
+                      direction={sortingMode}
+                      onClick={() => sort(true)}
+                    >
+                      Username
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell align="center">City</TableCell>
                   <TableCell align="center">Email</TableCell>
                   <TableCell align="center">Edit</TableCell>
@@ -76,7 +116,7 @@ const Dashboard: React.FC = () => {
               </TableHead>
               <TableBody>
                 {users.length > 0 ? (
-                  users.map((user) => (
+                  sortedUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell align="center">{user.id}</TableCell>
                       <TableCell align="center">{user.name}</TableCell>

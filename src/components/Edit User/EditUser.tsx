@@ -104,7 +104,12 @@ const AddUser: React.FC = () => {
             <Button
               variant="contained"
               color="primary"
-              disabled={!isNameValid() || !isEmailValid()}
+              disabled={
+                !isNameValid() ||
+                !isUsernameValid() ||
+                !isCityValid() ||
+                !isEmailValid()
+              }
               onClick={() => {
                 dispatch(
                   editUserAction({
